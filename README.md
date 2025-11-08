@@ -1,2 +1,95 @@
 # burnet-workshop
-Materials for a workshop provided to the Burnet Institute
+
+<img src="images/website_image.png" align="center" width="600" />
+
+Website: [https://dicook.github.io/burnet-workshop/](https://dicook.github.io/burnet-workshop/)
+
+This workshop is for data analysts at the Burnet Institute, designed to provide skills for improving plot design. It covers these topics:
+
+- Data visualisation principles, including accessibility, colour choices, proximity, appropriate mapping of variables to visual elements
+- Identifying poor elements in a plot
+- Fixing a plot design
+- Styling and theming plots
+- Quantitatively assessing the best plot design, using lineups
+- Incorporating uncertainty
+- Writing alt-text for data plots
+
+**Presenter**: [Dianne Cook](https://www.dicook.org), a Professor of 
+Statistics at Monash University in Melbourne, Australia, is a global leader
+in data visualisation. She has delivered over 100 invited talks 
+internationally and published extensively on various aspects of data 
+visualisation. Dr. Cook is a Fellow of the American Statistical 
+Association, an elected member of the International Statistical 
+Institute, past editor of the Journal of Computational and Graphical 
+Statistics, and the R Journal. She has served as a Board Member of the 
+R Foundation and is currently the co-chair of the Statistical Computing 
+and Visualisation Section of the [Statistical Society of Australia](https://www.statsoc.org.au).
+
+**Background**: You should have a basic understanding of R, be familiar 
+with tidy data, and know how to use ggplot2. It's also helpful if you've 
+read the material in [R4DS](https://r4ds.hadley.nz) and taken a first-year 
+statistics course.
+
+## Structure of tutorial
+
+| length (mins) | topic | description |
+|------:|:-------|:-------|
+| 1:00  |	 |  |
+| 1:30 | |  |
+| 2:00 |	 |  |
+| 2:30 |  | |
+| 3:00 | BREAK ?	 |  | 
+| 3:30 |  | |
+| 4:00 |	 |  |
+
+[Session 1 Slides]()
+
+[Session 2 Slides]()
+
+[Zip file of materials]()
+
+## Software used for slides
+
+R 4.5.0 (2025-04-11) -- "How About a Twenty-Six" and RStudio 2025.05.0+496 "Mariposa Orchid" Release (f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8, 2025-05-04) for macOS
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2025.05.0+496 Chrome/132.0.6834.210 Electron/34.5.1 Safari/537.36, Quarto 1.8.24 (/Applications/quarto/bin/quarto)
+
+```
+install.packages(c("ggplot2", 
+                   "tidyr", 
+                   "dplyr", 
+                   "readr", 
+                   "readxl",
+                   "stringr", 
+                   "forcats",
+                   "colorspace", 
+                   "patchwork",
+                   "broom", 
+                   "ggbeeswarm", 
+                   "ggmosaic",
+                   "nullabor", 
+                   "gapminder",
+                   "ggthemes",
+                   "conflicted"), 
+                   dependencies=c("Depends", "Imports"))
+```
+
+## Source material
+
+GitHub repo with all materials is 
+[https://dicook.github.io/tutorial_make_better_data_plots/](https://dicook.github.io/tutorial_make_better_data_plots/).
+
+## Resources 
+
+- [Healy (2018) Data Visualization: A practical introduction](https://socviz.co)
+- [Wilke (2019) Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+
+Copyright: Dianne Cook 2025
+
+These materials are licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
