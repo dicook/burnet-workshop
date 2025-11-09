@@ -1,7 +1,5 @@
 # burnet-workshop
 
-<img src="images/website_image.png" align="center" width="600" />
-
 Website: [https://dicook.github.io/burnet-workshop/](https://dicook.github.io/burnet-workshop/)
 
 This workshop is for data analysts at the Burnet Institute, designed to provide skills for improving plot design. It covers these topics:
@@ -34,13 +32,14 @@ statistics course.
 
 | length (mins) | topic | description |
 |------:|:-------|:-------|
-| 1:00  |	 |  |
-| 1:30 | |  |
-| 2:00 |	 |  |
-| 2:30 |  | |
-| 3:00 | BREAK ?	 |  | 
-| 3:30 |  | |
-| 4:00 |	 |  |
+| 1:00  |	Data visualisation principles | accessibility, colour choices, proximity, appropriate mapping
+of variables to visual elements |
+| 1:30 | Identifying poor elements in a plot |  |
+| 2:00 | Fixing a plot design	 |  |
+| 2:30 | BREAK | |
+| 3:00 | Styling and theming plots	 |  | 
+| 3:30 | Quantitatively assessing the best plot design | |
+| 4:00 | Incorporating uncertainty, and writing alt-text	 |  |
 
 [Session 1 Slides]()
 
