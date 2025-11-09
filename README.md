@@ -35,7 +35,7 @@ statistics course.
 
 ## Structure of tutorial
 
-| length (mins) | topic | description |
+| time | topic | description |
 |------:|:-------|:-------|
 | 1:00  |	Data visualisation principles | Accessibility, colour choices, proximity, appropriate mapping of variables to visual elements |
 | 1:30  | Identifying poor elements in a plot | With examples from the institute we will develop a list of what is good and what is not for each.  |
@@ -53,8 +53,7 @@ statistics course.
 
 ## Software used for slides
 
-R 4.5.0 (2025-04-11) -- "How About a Twenty-Six" and RStudio 2025.05.0+496 "Mariposa Orchid" Release (f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8, 2025-05-04) for macOS
-Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2025.05.0+496 Chrome/132.0.6834.210 Electron/34.5.1 Safari/537.36, Quarto 1.8.24 (/Applications/quarto/bin/quarto)
+R 4.5.0 (2025-04-11) -- "How About a Twenty-Six" and RStudio 2025.05.0+496 "Mariposa Orchid" Release (f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8, 2025-05-04) 
 
 ```
 install.packages(c("ggplot2", 
@@ -79,12 +78,14 @@ install.packages(c("ggplot2",
 ## Source material
 
 GitHub repo with all materials is 
-[https://dicook.github.io/tutorial_make_better_data_plots/](https://dicook.github.io/tutorial_make_better_data_plots/).
+[https://github.com/dicook/burnet-workshop/](https://github.com/dicook/burnet-workshop/).
 
-## Resources 
+## Other resources 
 
 - [Healy (2018) Data Visualization: A practical introduction](https://socviz.co)
 - [Wilke (2019) Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+
+## Attribution
 
 Copyright: Dianne Cook 2025
 
