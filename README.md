@@ -1,3 +1,7 @@
+---
+title: ""
+---
+
 # Designing better data plots at the Burnet Institute
 
 <div style="display: flex; gap: 10px;">
