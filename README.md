@@ -1,3 +1,5 @@
+## Designing better data plots at the Burnet Institute
+
 <div style="display: flex; gap: 10px;">
   <img src="example.png" alt="Example plot" width="45%">
   <img src="better.png" alt="Made better" width="45%">
