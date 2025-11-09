@@ -1,9 +1,3 @@
----
-title: "Designing better data plots at the Burnet Institute"
-author: "Dianne Cook"
-date: 2025-11-12
----
-
 <div style="display: flex; gap: 10px;">
   <img src="example.png" alt="Example plot" width="45%">
   <img src="better.png" alt="Made better" width="45%">
