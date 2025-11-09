@@ -1,7 +1,9 @@
 # Designing better data plots at the Burnet Institute
 
-![](example.png){width=300}
-![](better.png){width=300}
+<div style="display: flex; gap: 10px;">
+  <img src="example.png" alt="Example plot" width="45%">
+  <img src="better.png" alt="Made better" width="45%">
+</div>
 
 Website: [https://dicook.github.io/burnet-workshop/](https://dicook.github.io/burnet-workshop/)
 

@@ -1,7 +1,4 @@
 # _config.yml
-title: "Designing better data plots at the Burnet Institute"
-description: "This workshop is for data analysts at the Burnet Institute, designed to provide skills for improving plot design."
-url: "https://dicook.github.io/burnet-workshop/"
 theme: minima
 
 # Load some common plugins (optional)
