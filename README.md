@@ -1,5 +1,8 @@
 # burnet-workshop
 
+![](example.png){width=300}
+![](better.png){width=300}
+
 Website: [https://dicook.github.io/burnet-workshop/](https://dicook.github.io/burnet-workshop/)
 
 This workshop is for data analysts at the Burnet Institute, designed to provide skills for improving plot design. It covers these topics:
