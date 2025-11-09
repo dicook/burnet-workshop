@@ -1,4 +1,8 @@
-## Designing better data plots at the Burnet Institute
+---
+title: "Designing better data plots at the Burnet Institute"
+author: "Dianne Cook"
+date: 2025-11-12
+---
 
 <div style="display: flex; gap: 10px;">
   <img src="example.png" alt="Example plot" width="45%">
@@ -28,8 +32,7 @@ Statistics, and the R Journal. She has served as a Board Member of the
 R Foundation and is currently the co-chair of the Statistical Computing 
 and Visualisation Section of the [Statistical Society of Australia](https://www.statsoc.org.au).
 
-**Background**: You should have a basic understanding of R, be familiar 
-with tidy data, and know how to use ggplot2. It's also helpful if you've 
+**Background**: You should have a basic understanding of tidy data, wrangling and plotting data using a grammar. It's also helpful if you've 
 read the material in [R4DS](https://r4ds.hadley.nz) and taken a first-year 
 statistics course.
 
