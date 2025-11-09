@@ -1,4 +1,4 @@
-# burnet-workshop
+# Designing better data plots at the Burnet Institute
 
 ![](example.png){width=300}
 ![](better.png){width=300}

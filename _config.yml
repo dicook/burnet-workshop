@@ -1,0 +1,52 @@
+# _config.yml
+title: "Designing better data plots at the Burnet Institute"
+description: "This workshop is for data analysts at the Burnet Institute, designed to provide skills for improving plot design."
+url: "https://dicook.github.io/burnet-workshop/"
+theme: minima
+
+# Load some common plugins (optional)
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Brand palette & typography (used by your SCSS/layouts)
+brand:
+  colors:
+    primary:   "#EA6F3C"   # Burnet-like orange
+    primary_700: "#CF5F33"
+    primary_100: "#FFEDE3" # very light peach tint
+    surface:   "#FFFFFF"
+    text:      "#1A1A1A"
+    muted:     "#4D4D4D"
+    border:    "#EAEAEA"
+  fonts:
+    heading: "\"Nunito\", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+    body:    "\"Inter\", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+
+# Google Fonts (for many themes/plugins that read this block)
+google_fonts:
+  - family: Nunito
+    weights: "400;600;700;800"
+  - family: Inter
+    weights: "400;500;600"
+
+# SCSS build settings
+sass:
+  style: compressed
+  load_paths:
+    - _sass
+
+# Defaults so templates can find your brand CSS
+defaults:
+  - scope:
+      path: ""
+    values:
+      brand_css: "/assets/css/brand.css"
+
+# Useful site variables your layouts/SCSS can consume
+minima:
+  skin: auto
+  social_links:
+    github: https://github.com/dicook/
+    linkedin: https://www.linkedin.com/in/dianne-cook-a4877a104/

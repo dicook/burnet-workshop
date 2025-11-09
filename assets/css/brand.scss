@@ -1,0 +1,26 @@
+/* /assets/css/brand.scss */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --color-primary: {{ site.brand.colors.primary }};
+  --color-primary-700: {{ site.brand.colors.primary_700 }};
+  --color-primary-100: {{ site.brand.colors.primary_100 }};
+  --color-surface: {{ site.brand.colors.surface }};
+  --color-text: {{ site.brand.colors.text }};
+  --color-muted: {{ site.brand.colors.muted }};
+  --color-border: {{ site.brand.colors.border }};
+  --font-heading: {{ site.brand.fonts.heading }};
+  --font-body: {{ site.brand.fonts.body }};
+}
+
+html, body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+a { color: var(--color-primary); }
