@@ -32,14 +32,13 @@ statistics course.
 
 | length (mins) | topic | description |
 |------:|:-------|:-------|
-| 1:00  |	Data visualisation principles | accessibility, colour choices, proximity, appropriate mapping
-of variables to visual elements |
-| 1:30 | Identifying poor elements in a plot |  |
-| 2:00 | Fixing a plot design	 |  |
-| 2:30 | BREAK | |
-| 3:00 | Styling and theming plots	 |  | 
-| 3:30 | Quantitatively assessing the best plot design | |
-| 4:00 | Incorporating uncertainty, and writing alt-text	 |  |
+| 1:00  |	Data visualisation principles | Accessibility, colour choices, proximity, appropriate mapping of variables to visual elements |
+| 1:30  | Identifying poor elements in a plot | With examples from the institute we will develop a list of what is good and what is not for each.  |
+| 2:00  | Fixing a plot design	 | We will work with the examples from the institute to improve the designs in steps (if we have data and code available). |
+| 2:30  | BREAK | |
+| 3:00  | Quantitatively assessing the best plot design, and incorporating uncertainty	 | A lineup helps to assess whether the structure in a data plot is different from noise. We will show how this can be used to determine if one design makes it easier to read the structure than another. A second aspect of this session will be ways to incorporate representation of uncertainty in a plot to better communicate if patterns are important or not.   | 
+| 3:30  | Styling and theming plots, and writing alt-text descriptions | Making plots have the same look and feel is easier if a template design is available. Here we will discuss ways to construct a template that can be used repeatedly. We will also discuss writing effective text descriptions of data visualisations to make them more accessible for vision-impaired readers, an important (and often required) aspect of report writing today. |
+| 4:00  | Polishing your plots	 | This will be a hands-on session taking the previous designs, using lineups to determine which is better for communication, writing alt-text descriptions and developing themes. |
 
 [Session 1 Slides]()
 
