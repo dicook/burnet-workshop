@@ -42,34 +42,38 @@ statistics course.
 | 3:30  | Styling and theming plots, and writing alt-text descriptions | Making plots have the same look and feel is easier if a template design is available. Here we will discuss ways to construct a template that can be used repeatedly. We will also discuss writing effective text descriptions of data visualisations to make them more accessible for vision-impaired readers, an important (and often required) aspect of report writing today. |
 | 4:00  | Polishing your plots	 | This will be a hands-on session taking the previous designs, using lineups to determine which is better for communication, writing alt-text descriptions and developing themes. |
 
-[Session 1 Slides]()
+[Session 1 Slides](slides1.html)
 
-[Session 2 Slides]()
-
-[Zip file of materials]()
+[Session 2 Slides](slides2.html)
 
 ## Software used for slides
 
 R 4.5.0 (2025-04-11) -- "How About a Twenty-Six" and RStudio 2025.05.0+496 "Mariposa Orchid" Release (f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8, 2025-05-04) 
 
 ```
-install.packages(c("ggplot2", 
-                   "tidyr", 
-                   "dplyr", 
-                   "readr", 
-                   "readxl",
-                   "stringr", 
-                   "forcats",
-                   "colorspace", 
-                   "patchwork",
-                   "broom", 
-                   "ggbeeswarm", 
-                   "ggmosaic",
-                   "nullabor", 
-                   "gapminder",
-                   "ggthemes",
-                   "conflicted"), 
-                   dependencies=c("Depends", "Imports"))
+install.packages(c("tibble",
+"ggplot2",
+"tidyr",
+"dplyr",
+"readr",
+"readxl",
+"stringr",
+"forcats",
+"colorspace",
+"patchwork",
+"broom",
+"ggbeeswarm",
+"ggmosaic",
+"nullabor",
+"gapminder",
+"sf",
+"cartogram",
+"ggthemes",
+"conflicted",
+"ggstats",
+"ggdist",
+"brolgar",
+"lme4"), dependencies=c("Depends", "Imports"))
 ```
 
 ## Source material
