@@ -1609,6 +1609,7 @@ polishing needed (cover later)
 
 ## errors
 
+- blue category obscured by other two
 
 ## correct
 
@@ -1626,10 +1627,15 @@ polishing needed (cover later)
 
 ## message
 
-
+- Four variables: 
+    - categorical: 
+    - temporal: sex, type of sex, period, weeks
+    
+- ART initiation happens much faster after 2018, in all categories similarly.
 
 ## errors
 
+- Time is conventionally on horizontal axis.
 
 ## correct
 
@@ -1647,10 +1653,13 @@ polishing needed (cover later)
 
 ## message
 
-
+? studies are similar numerically, some have substantially more variation 
 
 ## errors
 
+- Order: should it be by estimate? year? weight?
+- Is size of square matching weight? Is is matching area? or length of side. Could change width of line also, because size of square is not easily noticed.
+- Axis is marking min and max, unorthodox. 
 
 ## correct
 

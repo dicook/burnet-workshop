@@ -1064,7 +1064,7 @@ Alt text, or alternative text, is a descriptive text alternative for images on a
 ::: {.fragment}
 
 - [Some Guidance for Writing alt text for Data Plots](https://numbats.github.io/alt-text-for-data-plots/)
-- [Shiny app with AI alt text generator](https://maliny.shinyapps.io/alt-text/)
+- [Shiny app with AI alt text generator](https://github.com/maliny12/AltTextGenerator)
 - Upcoming R package that will take a full quarto document, and write alt text for the figures.
 
 :::
