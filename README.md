@@ -77,11 +77,6 @@ install.packages(c("ggplot2",
 GitHub repo with all materials is 
 [https://github.com/dicook/burnet-workshop/](https://github.com/dicook/burnet-workshop/).
 
-## Other resources 
-
-- [Healy (2018) Data Visualization: A practical introduction](https://socviz.co)
-- [Wilke (2019) Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
-
 ## Attribution
 
 Copyright: Dianne Cook 2025

@@ -1,0 +1,1097 @@
+---
+title: "Designing better data plots at the Burnet Institute"
+title-slide-attributes:
+  data-background-color: "#006dae"
+  data-background-opacity: "0.5"
+author: "Dianne Cook <br> Monash University"
+format:
+  revealjs: 
+    theme: 
+      - default
+      - custom.scss
+    slide-number: c/t
+    chalkboard: false
+    width: 1600
+    height: 900
+    margin: 0.1
+    slide-tone: false
+    embed-resources: true
+code-line-numbers: false
+code-fold: true
+message: false
+highlight-style: pygments
+footer: "[https://dicook.github.io/burnet-workshop/](https://dicook.github.io/burnet-workshop/)"
+---
+
+```{r, include = FALSE}
+#| label: libraries-for-participants
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(readr)
+library(readxl)
+library(stringr)
+library(forcats)
+library(colorspace)
+library(patchwork)
+library(broom)
+library(ggbeeswarm)
+library(ggmosaic)
+library(nullabor)
+library(gapminder)
+library(ggstats)
+library(ggdist)
+library(brolgar)
+library(lme4)
+library(ggthemes)
+library(conflicted)
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::slice)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::mutate)
+conflicts_prefer(dplyr::summarise)
+```
+
+```{r, include = FALSE}
+#| label: options-for-nice-slides
+options(width = 200)
+knitr::opts_chunk$set(
+  fig.width = 3,
+  fig.height = 3,
+  fig.align = "center",
+  dev.args = list(bg = 'transparent'),
+  out.width = "100%",
+  fig.retina = 3,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  cache = FALSE
+)
+```
+
+```{r, include = FALSE}
+#| label: theme-for-nice-plots
+theme_set(ggthemes::theme_gdocs(base_size = 14) +
+  theme(plot.background = 
+        element_rect(fill = 'transparent', colour = NA),
+        axis.line.x = element_line(color = "black", 
+                                   linewidth = 0.4),
+        axis.line.y = element_line(color = "black", 
+                                   linewidth = 0.4),
+        panel.grid.major = element_line(color = "grey90"),
+        axis.ticks = element_line(color = "black"),
+        plot.title.position = "plot",
+        plot.title = element_text(size = 14),
+        panel.background  = 
+          element_rect(fill = 'transparent', colour = "black"),
+        legend.background = 
+          element_rect(fill = 'transparent', colour = NA),
+        legend.key        = 
+          element_rect(fill = 'transparent', colour = NA)
+  ) 
+)
+```
+
+```{r}
+#| echo: false
+#| eval: false
+# divergingx_hcl(palette="Zissou 1", n=10)
+# [1] "#3B99B1" "#40ABA5" "#6FB798" "#9FC095" "#C7C98A"
+# [6] "#EABE23" "#E8A419" "#E78802" "#EA6400" "#F5191C"
+# specplot(divergingx_hcl(palette="Zissou 1", n=10))
+```
+
+
+## Outline
+
+```{r}
+#| echo: false
+plan <- tribble(~time, ~topic,
+                "3:00", "Quantitatively assessing the best plot design, and incorporating uncertainty",
+                "3:30", "Styling and theming plots, and writing alt-text descriptions", 
+                "4:00", "Polishing your plots"
+                )
+knitr::kable(plan)
+```
+
+```{r}
+#| label: tb-data
+#| echo: false
+# load libraries
+library(tidyverse)
+library(colorspace)
+library(patchwork)
+library(broom)
+library(palmerpenguins)
+library(ggbeeswarm)
+library(vcd)
+library(nullabor)
+library(MASS)
+library(colorspace)
+library(conflicted)
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::slice)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::mutate)
+conflicts_prefer(dplyr::summarise)
+
+# prepare data
+tb <- read_csv("data/TB_notifications_2023-08-21.csv") |>
+  filter(country == "Australia", year > 1996, year < 2013) |>
+  select(year, contains("new_sp")) 
+tb_tidy <- tb |>
+  select(-new_sp, -new_sp_m04, -new_sp_m514, 
+                  -new_sp_f04, -new_sp_f514) |> 
+  pivot_longer(starts_with("new_sp"), 
+    names_to = "sexage", 
+    values_to = "count") |>
+  mutate(sexage = str_remove(sexage, "new_sp_")) |>
+  separate_wider_position(
+    sexage,
+    widths = c(sex = 1, age = 4),
+    too_few = "align_start"
+  ) |>
+  filter(age != "u") |>
+  mutate(age = fct_recode(age, "0-14" = "014",
+                          "15-24" = "1524",
+                          "15-24" = "1524",
+                          "25-34" = "2534",
+                          "35-44" = "3544",
+                          "45-54" = "4554",
+                          "55-64" = "5564",
+                          "> 65" = "65"))
+```
+
+## Quantitatively assessing the best plot design {.center .center-align .transition-slide}
+
+
+## Better design
+
+:::: {.columns}
+::: {.column width=20%}
+
+::: {style="font-size: 80%;"}
+
+The same procedure can be used to compare different plot designs. 
+
+If the real plot is **detected faster and more often** amongst a page of decoys, using one design in comparison to another, then that design is better.
+
+`r countdown::countdown(minutes=0, seconds=20, left=0, bottom=30)`
+
+:::
+:::
+::: {.column width=80%}
+
+::: {.panel-tabset}
+
+## Which is different?
+
+- There are 12 plots on the page. Your job is to pick the one that is the most different.
+- Keep your answer secret until asked to reveal.
+- We will split into two groups, A and B.
+- You will be in either A or B. **If in B, shut your eyes until I tell you to open them.**
+
+## Design A
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 7
+#| out-width: 70%
+g07 <- gapminder |> 
+  filter(year == 2007) 
+set.seed(414)
+ggplot(lineup(null_permute("lifeExp"), g07, n=12)) +
+  geom_point(aes(x=lifeExp, 
+                 y=gdpPercap), colour = "#3B99B1") +
+  facet_wrap(~.sample, ncol=4) +
+  theme(axis.text = element_blank()) +
+  xlab("") + ylab("")
+```
+
+## Design B
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 7
+#| out-width: 70%
+set.seed(514)
+ggplot(lineup(null_permute("lifeExp"), g07, n=12)) +
+  geom_col(aes(x=as.numeric(country),
+             y=gdpPercap,
+             fill=lifeExp)) + 
+  xlab("country") +
+  scale_fill_distiller(palette = "RdPu", trans="log10") +    
+  scale_y_log10("",
+                breaks = seq(0, 50000, 10000), 
+                labels = seq(0, 50, 10)) +
+  facet_wrap(~.sample, ncol=4) +
+  theme(axis.text = element_blank(),
+        legend.position = "none") +
+  xlab("") + ylab("")
+```
+
+
+:::
+
+:::
+::::
+
+## Process
+
+::: {style="font-size: 90%;"}
+
+1. **Create Lineup Data**: assuming that at least two variables, X and Y are involved in the design, we create data for a lineup of size $m$ by creating $m−1$ permutations of Y or, in the case of a simulation study, drawing m−1 samples of size n (the number of rows in the data) from the null distribution. Add the original data to the lineup data randomly between 1 and m. The R package `nullabor` provides a framework for easy creation of lineup data.
+2. Create lineups from **competing designs**: using the same data, render lineups of all competing designs.
+3. **Evaluate Lineups**: by presenting the lineups to independent observers. Assess both signal strength and time needed by individuals to come to a decision. Note that each observer should only be exposed to each lineup data once.
+4. **Evaluate Competing Designs**: differences in signal strength or time to decision are due to differences in the design. In the case that individuals were shown multiple lineups (as part of a bigger study), it is possible to correct outcome measurements for an individual's visual ability.
+:::
+
+## Foundation
+
+
+::: columns
+::: column
+
+**Tidy data and random variables**
+
+- Tidy data mirrors elementary statistics
+- Tabular form puts variables in columns and observations in rows
+- Not all tabular data is in this form
+- In this form, we can think about  $X_1 \sim N(0,1), ~~X_2 \sim \text{Exp}(1) ...$
+
+$$\begin{align}X &= \left[ \begin{array}{rrrr}
+           X_1 & X_2 & ... & X_p 
+           \end{array} \right] \\
+  &= \left[ \begin{array}{rrrr}
+           X_{11} & X_{12} & ... & X_{1p} \\
+           X_{21} & X_{22} & ... & X_{2p} \\
+           \vdots & \vdots & \ddots& \vdots \\
+           X_{n1} & X_{n2} & ... & X_{np}
+           \end{array} \right]\end{align}$$
+:::
+
+::: column
+
+**Grammar of graphics and statistics**
+
+- A statistic is a function on the values of items in a sample, e.g. for $n$ iid random variates $\bar{X}_1=\displaystyle\sum_{i=1}^n X_{i1}$, $s_1^2=\displaystyle\frac{1}{n-1}\displaystyle\sum_{i=1}^n(X_{i1}-\bar{X}_1)^2$
+- We study the behaviour of the statistic over all possible samples of size $n$. 
+- The grammar of graphics is the mapping of (random) variables to graphical elements, making plots of data into statistics
+
+:::
+:::
+
+## Example 1
+
+:::: {.columns}
+::: {.column width=20%}
+
+![](burnet-examples/aimee_public_health_survey.png){width=1200}
+
+`r countdown::countdown(minutes=0, seconds=20, left=0, bottom=30)`
+:::
+::: {.column width=80%}
+
+::: {.panel-tabset}
+
+## null
+
+<br>
+
+If examining two distributions of categorical variables what would be NOT INTERESTING?
+
+
+## answer
+
+
+<br>
+
+both being the same is not interesting
+
+
+
+## generate
+
+- simulate 11 data sets where the distribution is the same for both as the null sets. 
+- plot these data in the same lineup structure using the different designs
+
+```{r}
+#| code-fold: true
+set.seed(706)
+pos <- sample(1:12)
+nobs <- 264
+prob <- tibble(s1 = c(1, 4, 5, 2, 3)/15,
+               s2 = c(5, 4, 3, 1, 1)/15) 
+d <- tibble(v1 = factor(sample(LETTERS[1:5],
+                        size = nobs, replace = TRUE, 
+                        prob = prob$s1),
+                        levels=LETTERS[1:5]),
+            v2 = factor(sample(LETTERS[1:5],
+                        size = nobs, replace = TRUE, 
+                        prob = prob$s2),
+                        levels=LETTERS[1:5]))
+d_long <- d |>
+  count(v1, v2) |>
+  mutate(p = n/15) |>
+  pivot_longer(cols = c(v1, v2), 
+               names_to = "var", 
+               values_to = "val") |>
+  mutate(.sample = pos[1])
+d_lineup <- d_long
+dd_lineup <- d |>
+  mutate(.sample = pos[1])
+# simulate nulls
+for (i in 2:12) {
+  d <- tibble(v1 = factor(sample(LETTERS[1:5],
+                        size = nobs, replace = TRUE, 
+                        prob = prob$s1),
+                        levels=LETTERS[1:5]),
+            v2 = factor(sample(LETTERS[1:5],
+                        size = nobs, replace = TRUE, 
+                        prob = prob$s1),
+                        levels=LETTERS[1:5]))
+  d_long <- d |>
+    count(v1, v2) |>
+    pivot_longer(cols = c(v1, v2), 
+               names_to = "var", 
+               values_to = "val") |>
+  mutate(.sample = pos[i])
+  d_lineup <- bind_rows(d_lineup, d_long)
+  d <- d |>
+    mutate(.sample = pos[i])
+  dd_lineup <- bind_rows(dd_lineup, d)
+}
+```
+
+## 1
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 75%
+ggplot(d_lineup, aes(x=var, fill=val, y=n)) +
+    geom_col(position="stack") +
+    facet_wrap(~.sample, ncol=4) +
+    scale_fill_discrete_divergingx() +
+    xlab("") +
+    theme_bw() +
+    theme(legend.position = "none",
+          axis.text = element_blank(),
+          axis.title = element_blank())
+```
+
+## 2
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: 75%
+p1 <- d_lineup |> 
+  filter(.sample < 7) |>
+  ggplot(aes(x=val, y=n)) +
+    geom_col() +
+    facet_grid(var~.sample) +
+    xlab("") +
+    theme_bw() +
+    theme(legend.position = "none",
+          axis.text = element_blank(),
+          axis.title = element_blank(),
+          strip.text.y = element_blank())
+p2 <- d_lineup |> 
+  filter(.sample >= 7) |>
+  ggplot(aes(x=val, y=n)) +
+    geom_col() +
+    facet_grid(var~.sample) +
+    xlab("") +
+    theme_bw() +
+    theme(legend.position = "none",
+          axis.text = element_blank(),
+          axis.title = element_blank(),
+          strip.text.y = element_blank())
+p1 + p2 + plot_layout(ncol=1)
+```
+
+## 3
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 80%
+ggplot(d_lineup, aes(x=val, fill=var, y=n)) +
+    geom_col(position="fill") +
+    facet_wrap(~.sample, ncol=4) +
+    scale_fill_discrete_divergingx() +
+    xlab("") +
+    theme_bw() +
+    theme(legend.position = "none",
+          axis.text = element_blank(),
+          axis.title = element_blank())
+```
+
+## 4
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 75%
+gglikert(dd_lineup, include = c(v1, v2), 
+  add_labels = FALSE, add_totals = FALSE) +
+  facet_wrap(~.sample, ncol=4) +
+  scale_fill_discrete_divergingx() +
+  xlab("") +
+  theme_bw() +
+  theme(legend.position = "none",
+          axis.text = element_blank(),
+          axis.title = element_blank())
+
+```
+
+:::
+:::
+::::
+
+## Incorporating uncertainty {.center .center-align .transition-slide}
+
+## Why?
+
+:::: {.columns}
+::: {.column}
+
+Adding representation of the uncertainty in a visualisation should:
+
+1. Reinforce signals that are important
+2. Hide signals that are primarily noise
+
+to enable making the better decisions and conclusions, or dare we say, inference.
+
+:::
+::: {.column}
+
+::: {style="font-size: 70%;"}
+
+```{r}
+#| label: model
+#| fig-width: 6
+#| fig-height: 4
+#| out-width: 80%
+#| echo: false
+data("wages")
+wages_fct <- wages |>
+  select(id, ln_wages, xp, high_grade) |>
+  mutate(high_grade = factor(high_grade))
+wages_fit <- lmer(ln_wages~xp + high_grade + (xp|id), data=wages_fct)
+wages_fe <- summary(wages_fit)$coefficients
+wages_fe_d <- tibble(xp = rep(seq(0, 13, 1), 7),
+     high_grade = rep(c(6, 7, 8, 9, 10, 11, 12), rep(14, 7))) |>
+  mutate(ln_wages = case_when(
+    high_grade == 6 ~ wages_fe[1,1] + wages_fe[2,1]*xp,
+    high_grade == 7 ~ wages_fe[1,1] + wages_fe[3,1] + wages_fe[2,1]*xp,
+    high_grade == 8 ~ wages_fe[1,1] + wages_fe[4,1]  + wages_fe[2,1]*xp,
+    high_grade == 9 ~ wages_fe[1,1] + wages_fe[5,1]  + wages_fe[2,1]*xp,
+    high_grade == 10 ~ wages_fe[1,1] + wages_fe[6,1]  + wages_fe[2,1]*xp,
+    high_grade == 11 ~ wages_fe[1,1] + wages_fe[7,1]  + wages_fe[2,1]*xp,
+    high_grade == 12 ~ wages_fe[1,1] + wages_fe[8,1]  + wages_fe[2,1]*xp)
+  ) |>
+  mutate(high_grade = factor(high_grade))
+ggplot(wages_fe_d) + 
+  geom_line(aes(x=xp, 
+                y=ln_wages, 
+                colour=high_grade, 
+                group=high_grade)) +
+  scale_colour_discrete_divergingx(palette = "Zissou 1") +
+  labs(x="Experience (years)", y="Wages (ln)", colour="Grade") 
+```
+
+```{r}
+#| label: modelanddata
+#| fig-width: 6
+#| fig-height: 4
+#| out-width: 80%
+#| echo: false
+ggplot() + 
+  geom_line(data=wages_fct, aes(x=xp, y=ln_wages, group=id), alpha=0.1) +
+  geom_line(data=wages_fe_d, aes(x=xp, 
+                y=ln_wages, 
+                colour=high_grade, 
+                group=high_grade)) +
+  scale_colour_discrete_divergingx(palette = "Zissou 1") +
+  labs(x="Experience (years)", y="Wages (ln)", colour="Grade") 
+```
+
+:::
+
+:::
+::::
+
+# Common options 
+
+:::: {.columns}
+::: {.column width=15%}
+
+::: {style="font-size: 70%;"}
+
+Melbourne pedestrian counts at Southern Cross Station, October 2025.
+
+:::
+
+:::
+
+::: {.column width=85%}
+
+::: {.panel-tabset}
+
+```{r}
+#| eval: false
+#| echo: false
+ped <- rwalkr::melb_walk(from = as.Date("2025-10-01"), 
+                         to = as.Date("2025-10-31"))
+ped <- ped |>
+  mutate(wday = wday(Date, label=TRUE, 
+      abbr=TRUE, week_start=1)) |>
+  mutate(Count = as.numeric(Count))
+save(ped, file="data/ped_Oct2025.rda")
+```
+
+```{r}
+#| label: pedestrians
+#| echo: false
+load("data/ped_Oct2025.rda")
+ped_sc <- ped |>
+  filter(Sensor == "Southern Cross Station") |>
+  filter(wday(Date) == 5) |>
+  group_by(Time) |>
+  summarise(ave = mean(Count),
+            mx = max(Count),
+            mn = min(Count),
+            dif = mx - mn, 
+           .groups = "drop") 
+b1 <- ggplot(ped_sc, aes(x=Time, y=ave)) +
+  geom_col(fill = "#20794D") +
+  xlab("Hour") + ylab("Count")
+b2 <- ggplot(ped_sc, aes(x=Time, y=ave)) +
+  geom_col(fill = "#b9ca4a") +
+  geom_errorbar(aes(ymin = mn, ymax = mx),
+    width=0.5, colour="#20794D") +
+  xlab("Hour") + ylab("Count")
+b3 <- ggplot(ped_sc, aes(x=Time,
+    ydist=distributional::dist_normal(ave, dif))) +
+  stat_pointinterval(colour = "#20794D") +
+  xlab("Hour") + ylab("Count")
+b4 <- ggplot(ped_sc, aes(x=Time,
+    ydist=distributional::dist_normal(ave, dif/2))) +
+  stat_gradientinterval(colour = NA, fill="#20794D", 
+    .width=1) +
+  geom_line(aes(x=Time, y=ave), colour="#20794D") +
+  xlab("Hour") + ylab("Count")
+b5 <- ggplot(ped_sc, aes(x=Time, y=ave)) +
+  geom_ribbon(aes(ymin = mn, 
+                  ymax = mx),
+    fill = "#b9ca4a") +
+  geom_line(colour="#20794D") +
+  xlab("Hour")
+ped_sc_ci <- ped_sc |>
+  mutate(l50 = ave - 0.50*dif,
+         u50 = ave + 0.50*dif,
+         l80 = ave - 0.8*dif,
+         u80 = ave + 0.8*dif,
+         l99 = ave - 0.99*dif,
+         u99 = ave + 0.99*dif
+  ) |>
+  pivot_longer(cols=l50:u99, names_to = "intprob", 
+    values_to="value") |>
+  mutate(bound = str_sub(intprob, 1, 1),
+       prob = str_sub(intprob, 2, 3)) |>
+  select(Time, ave, prob, bound, value) |>
+  pivot_wider(names_from = bound, values_from = value) 
+b6 <- ggplot(ped_sc_ci, aes(x=Time, y=ave)) +
+  geom_lineribbon(aes(ymin = l, ymax = u, fill = prob)) +
+  labs(x="Hour", fill="Confidence") +
+  scale_fill_discrete_sequential(palette = "Greens", 
+    rev=FALSE, n=5) +
+  theme(legend.position = "none")
+b7 <- ggplot(ped_sc, aes(x=Time, y=ave)) +
+  geom_smooth(colour = "#20794D", fill = "#b9ca4a", span=0.4) +
+  geom_point(colour = "#20794D") +
+  xlab("Hour")
+```
+
+## [Bars]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 70%
+b1
+```
+
+## [bar+CI]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 70%
+b2
+```
+
+## [CI]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 70%
+b3
+```
+
+## [Ribbon]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 70%
+b5
+```
+
+## [LineRibbon]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 5
+#| out-width: 70%
+b6
+```
+
+## [Loess]{.f80} 
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 70%
+b7
+```
+
+## [Code]{.f80} 
+
+```{r}
+#| label: pedestrians
+#| echo: true
+#| eval: false
+```
+
+
+:::
+
+:::
+::::
+
+## Broader applicability
+
+The approaches used on the barcharts here are the same approaches that apply to many other types of displays.
+
+- Error bars
+- Error bands
+- Gradients
+- Multiple samples, such as bootstrap or simulation 
+
+<br>
+
+*Defining uncertainty, or what metric to calculate, is not often straightforward.*
+
+## Styling and theming {.center .center-align .transition-slide}
+
+## Styling {.scrollable}
+
+:::: {.columns}
+::: {.column width=30%}
+
+The [BBC cookbook](https://bbc.github.io/rcookbook/) has good basic advice for **journalism and reports**. The work of [Amanda Cox](https://gestalten.com/blogs/journal/visualizing-a-new-new-york-times) has been instrumental in the NY Times data visualisations.
+
+The Royal Statistical Society provides a [Best Practices for Data Visualisation](https://royal-statistical-society.github.io/datavisguide/) with its own [RSSthemes](https://github.com/nrennie/RSSthemes) package for ggplot2, for **academic publications**.
+
+<br><br>
+
+::: {.f80}
+*The default ggplot2 theme `theme_grey()` is designed to give the data plot the same ink strength on the page as the surrounding text.*
+:::
+
+:::
+::: {.column width=5%}
+:::
+::: {.column width=65%}
+
+::: {.f50}
+Australia has maintained its status as a low-incidence tuberculosis (TB) country over the past decade, with notification rates that have remained relatively stable despite global fluctuations in TB burden. The country's TB epidemiology presents a unique profile characterized by consistent low domestic transmission and a disease burden heavily concentrated among overseas-born populations.
+
+Australia reports approximately 1300 cases of TB per year and has a TB case notification rate of 5.5 cases per 100,000 population, though recent data suggests this rate has shown slight variations. Incidence of tuberculosis (per 100,000 people) in Australia was reported at 6.2 in 2023, indicating a modest increase from historical averages. In 2015 this was 5.3 per 100,000 population per year, corresponding to 1,244 individual notifications, demonstrating the relatively stable nature of TB incidence in the country.
+The consistency of these figures over the decade reflects Australia's effective TB control measures and robust public health surveillance systems. This rate has essentially remained unchanged since the mid-1980s, however a slight increase in rates has been observed since 2003, suggesting a gradual but measurable trend that health authorities continue to monitor closely.
+
+```{r}
+#| label: page-of=text
+#| fig-width: 6
+#| fig-height: 3
+#| out-width: 60%
+#| echo: false
+#| fig-cap: "Fig 1. TB incidence in Australia  1980-2021. Initially incidence dropped but it has been steadily climbing in the recent two decades. Note that, counts are not population adjusted."
+tb_aus <- read_csv("data/TB_notifications_2023-08-21.csv") |>
+  filter(iso3 == "AUS") |> 
+  select(year, c_newinc) 
+
+tb_aus_p <- tb_aus |>
+    ggplot(aes(x=year, y=c_newinc)) +
+      geom_point(colour="grey40", ) +
+      geom_smooth(colour="black", 
+                  se=FALSE, 
+                  alpha=0.8,
+                  span = 0.4) +
+  xlab("year") + 
+  scale_y_continuous("count ('000)", 
+    breaks = seq(1000, 1600, 200), 
+    labels=c("1.0", "1.2", "1.4", "1.6")) 
+  
+tb_aus_p + theme_grey() +
+  theme(aspect.ratio = 0.5)
+```
+
+
+A defining characteristic of Australia's TB epidemiology is the overwhelming concentration of cases among overseas-born populations. Between 88% to 95% of TB cases in Australia have been reported in the overseas-born population, highlighting the critical role of migration patterns in shaping the country's TB landscape. This demographic distribution has remained consistent throughout the past decade and represents one of the most significant epidemiological features of TB in Australia.
+The Australian-born population experiences markedly lower TB rates, with specific risk factors identified in vulnerable groups. Research from Victoria reveals that the most common risk factor in the 0–14 year age group was a household contact with tuberculosis (85.1%), followed by having a parent from a high tuberculosis incidence country (70.2%). These findings underscore the importance of contact tracing and screening programs, particularly for children in households with overseas-born parents from high-burden countries.
+
+
+:::
+
+:::
+::::
+
+## Overall themes 
+
+:::: {.columns}
+::: {.column width=30%}
+The [ggthemes](https://r-graph-gallery.com/package/ggthemes.html) package supplements the handful available in [ggplot2](https://ggplot2.tidyverse.org/reference/ggtheme.html).
+
+These are convenient definitions of the array of style choices for a data plot that include background, position and sizing of title and axis text, legend position and arrangement, axes, ticks and grid lines, extra space at plot edges, ...
+
+:::
+::: {.column width=70%}
+
+::: {.f70}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 80%
+library(patchwork)
+p1 <- tb_aus_p + theme_grey() +
+  theme(aspect.ratio = 0.5) + ggtitle("default")
+p2 <- tb_aus_p + theme_minimal() +
+  theme(aspect.ratio = 0.5) + ggtitle("minimal")
+p3 <- tb_aus_p + theme_tufte() +
+  theme(aspect.ratio = 0.5) + ggtitle("tufte")
+p4 <- tb_aus_p + theme_economist() +
+  theme(aspect.ratio = 0.5) + ggtitle("economist")
+p1 + p2 + p3 + p4 + plot_layout(ncol=2)
+```
+
+:::
+:::
+
+::::
+
+## Setting theme elements 
+
+:::: {.columns}
+::: {.column width=50%}
+A theme for all plots was specified for these two slide decks.
+
+```{r}
+#| label: theme-for-nice-plots
+#| code-fold: false
+#| eval: false
+```
+
+:::
+::: {.column width=5%}
+:::
+::: {.column width=45%}
+
+::: {.fragment}
+
+Basic theme: `theme_gdocs()`
+
+- Text size adjusted
+- Background set
+- Axes lines adjusted
+- Grid lines colour changed
+- Title position changed
+
+:::
+
+:::
+::::
+
+## Colour palettes 
+
+:::: {.columns}
+::: {.column}
+
+The [colorspace](https://colorspace.r-forge.r-project.org/articles/colorspace.html) package has the most comprehensive set of palettes and tools for assessing, or creating new palettes. 
+
+If you have mapped the variables correctly, changing the colours only requires using the assignment of a new palette.
+
+:::
+::: {.column}
+
+::: {.panel-tabset}
+
+## Default
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+tb_age <- tb_tidy |> 
+  filter(!(age %in% c("0-14", "unknown"))) |>
+  ggplot(aes(x = year, 
+             y = count, 
+             colour = age)) +
+  geom_point() +
+  geom_smooth(se=F) +
+  facet_wrap(~sex, ncol = 2) +
+  scale_x_continuous("year", 
+    breaks = seq(1998, 2012, 2), 
+    labels = c("98", "00", "02", "04", "06", "08", "10", "12")) +
+  theme(axis.text = element_text(size=10)) 
+tb_age  
+```
+
+:::
+
+## 1
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+tb_age +
+  scale_color_discrete_divergingx(palette="Zissou 1") 
+```
+
+:::
+
+## 2
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+tb_age +
+  scale_color_discrete_divergingx(palette="Geyser") 
+```
+:::
+
+## 3
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+tb_age +
+  scale_color_discrete_sequential(palette="OrYel") 
+```
+:::
+
+:::
+
+:::
+::::
+
+## Colorblind proofing 
+
+:::: {.columns}
+::: {.column}
+
+The [colorspace](https://colorspace.r-forge.r-project.org/articles/colorspace.html) package has several functions `deutan()`, `protan()`, `tritan()` which simulates color vision deficiencies.
+
+You need to create the changed colour palette outside the plotting code, and then apply it manually. 
+
+Also the package `dichromat` has tools to simulate color deficiencies.
+
+:::
+::: {.column}
+
+::: {.panel-tabset}
+
+## Default
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+clrs <- deutan(scales::hue_pal()(6))
+tb_age + scale_colour_manual("", values = clrs)
+```
+
+:::
+
+## 1
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+clrs <- deutan(divergingx_hcl(6, "Zissou 1"))
+tb_age +
+  scale_colour_manual("", values = clrs)
+```
+
+:::
+
+## 2
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+clrs <- deutan(divergingx_hcl(6, "Geyser"))
+tb_age +
+  scale_colour_manual("", values = clrs)
+```
+:::
+
+## 3
+
+::: {.f70}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+clrs <- deutan(sequential_hcl(6, "OrYel"))
+tb_age +
+  scale_colour_manual("", values = clrs)
+```
+:::
+
+:::
+
+:::
+::::
+
+## Creating ensemble of plots 
+
+:::: {.columns}
+::: {.column width=30%}
+
+One plot is often not enough, for a report or an academic publication.
+
+Creating and arranging is an art.
+
+The packages [patchwork](https://patchwork.data-imaginist.com/articles/guides/layout.html) and [cowplot](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) can help with layout.
+
+For the tuberculosis data, suppose we want one overview plot, and then separate displays showing sex and age effects.
+
+:::
+::: {.column width=70%}
+
+::: {.f70}
+
+```{r}
+#| fig-width: 13
+#| fig-height: 8
+#| out-width: 100%
+ov <- tb_tidy |>
+  group_by(year) |>
+  summarise(count = sum(count)) |>
+  ggplot(aes(x=year, y=count)) +
+    geom_col() +
+    annotate("text", x=1996, y=320, label="A", size=8) +
+    xlim(c(1996, 2013))
+sex <- tb_tidy |>
+  group_by(year, sex) |>
+  summarise(count = sum(count)) |>
+  ggplot(aes(x=year, weight=count, fill=sex)) +
+    geom_bar(position="fill") +
+    scale_fill_discrete_divergingx(palette = "TealRose",
+      rev=TRUE) +
+    ylab("proportion") +
+    annotate("text", x=1996, y=0.95, label="B", size=8) +
+    xlim(c(1996, 2013))
+age <- tb_tidy |>
+  group_by(year, age) |>
+  summarise(count = sum(count)) |>
+  ggplot(aes(x=year, weight=count, fill=age)) +
+    geom_bar(position="fill") +
+    scale_fill_discrete_sequential(palette = "Sunset") +
+    ylab("proportion") +
+    annotate("text", x=1996, y=0.95, label="C", size=8) +
+    xlim(c(1996, 2013))
+
+ov + sex/age + plot_layout(widths=c(2,1))
+```
+:::
+
+:::
+::::
+
+## Adding alt text
+
+:::: {.columns}
+::: {.column}
+Alt text, or alternative text, is a descriptive text alternative for images on a document that serves two main purposes: 
+
+- accessibility and search engine optimization (SEO). It allows screen readers to describe images to visually impaired users and 
+- helps search engines understand the image's content to improve search rankings. 
+
+*How to write alt text for data visualisations is not well-documented.* 
+:::
+::: {.column}
+
+::: {.fragment}
+
+- [Some Guidance for Writing alt text for Data Plots](https://numbats.github.io/alt-text-for-data-plots/)
+- [Shiny app with AI alt text generator](https://maliny.shinyapps.io/alt-text/)
+- Upcoming R package that will take a full quarto document, and write alt text for the figures.
+
+:::
+
+:::
+::::
+
+## Polishing your plots {.center .center-align .transition-slide}
+
+## Resources
+
+- [Healy (2018) Data Visualization: A practical introduction](https://socviz.co)
+- [Wilke (2019) Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+- [ggplot2](https://ggplot2.tidyverse.org/)
+- [cartogram](https://www.r-graph-gallery.com/cartogram.html)
+- [Comparing plot designs](https://ieeexplore.ieee.org/document/6327249)
+- [Generating lineups with the nullabor](http://dicook.github.io/nullabor/)
+- [ggdist: Visualizations of distributions and uncertainty](https://mjskay.github.io/ggdist/)
+- [ggdibbler: incorporates uncertainty into your graphic](https://harriet-mason.github.io/ggdibbler/)
+- styling: [BBC cookbook](https://bbc.github.io/rcookbook/), [RSSthemes](https://github.com/nrennie/RSSthemes)
+- [colorspace](https://colorspace.r-forge.r-project.org/index.html)
+- [ggthemes](https://r-graph-gallery.com/package/ggthemes.html)
+
+## End of session 2 {.center}
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+ 
