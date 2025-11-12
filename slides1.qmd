@@ -1520,13 +1520,20 @@ polishing needed (cover later)
 
 ## message
 
+data:
 
+- variables: budget possibility, allocation
+
+we can do more with more funds?
 
 ## errors
 
+- stacking impedes comparing categories, especially betweeen different budget amounts
+- too many colours. there appears to be some hierarchy or larger categories?
 
 ## correct
 
+- budget mapped to common axis. however, the total amount is not the main message.
 
 :::
 
@@ -1541,13 +1548,23 @@ polishing needed (cover later)
 
 ## message
 
+data:
 
+- variables: HIV status, year
+- plus count
+
+? Unknown status us decreasing, immune is increasing?
 
 ## errors
+
+- stacking makes it difficult to read change in proportion of "susceptible" and "uncategorisable" and "HBV infection"
+- table not aligned with bars
+- missing overall numbers over years
 
 
 ## correct
 
+- % mapped to position along a line
 
 :::
 
@@ -1562,13 +1579,25 @@ polishing needed (cover later)
 
 ## message
 
+Data:
 
+- variables: year, n
+- event: screening started
+
+Screening has not helped reduce TB
 
 ## errors
 
+- data needs normalising. can we compare before screening and after? are similar proportion of population checked, or are these different populations?
+
+- interested in trend, but this is harder to read from a bar chart.
+- mismatch of bars and trend line, better to use points and trend line
 
 ## correct
 
+- marking event
+- alignment of n to position along a line
+- time on x axis
 
 :::
 
@@ -1584,7 +1613,7 @@ polishing needed (cover later)
 
 ## message
 
-
+? presence or proportion (BULK/AIM) for top combinations
 
 ## errors
 
@@ -1659,10 +1688,11 @@ polishing needed (cover later)
 
 - Order: should it be by estimate? year? weight?
 - Is size of square matching weight? Is is matching area? or length of side. Could change width of line also, because size of square is not easily noticed.
-- Axis is marking min and max, unorthodox. 
+- Axis is marking min and max, unorthodox, and too far under plot to connect immediately
 
 ## correct
 
+- alignment of items
 
 :::
 
@@ -1795,6 +1825,27 @@ gglikert(d, add_labels = FALSE, add_totals = FALSE) +
 
 :::
 
+## Example 3
+
+::: {.panel-tabset}
+
+## plot
+
+![](burnet-examples/victoria_public_health.png){width=1200}
+
+## 1
+
+- Focus on proportions in each category
+
+## 2
+
+- Mosaic plot to show proportions and counts
+
+## 3
+
+- Separate or align table, add proportions/percentages to table
+
+:::
 
 ## Example 9
 
