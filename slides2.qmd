@@ -15,7 +15,7 @@ format:
     height: 900
     margin: 0.1
     slide-tone: false
-    embed-resources: true
+    embed-resources: false
 code-line-numbers: false
 code-fold: true
 message: false
